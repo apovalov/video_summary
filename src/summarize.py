@@ -6,6 +6,7 @@ def summary_prompt(input_text: str) -> str:
     """
     prompt = f"Создайте краткое и информативное описание видео на основе следующего текста:\n{input_text}\n\nКраткое описание:"
     return prompt
+
 def summarize_text(input_text: str) -> str:
     """
     Summarize input text of the video.

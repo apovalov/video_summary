@@ -1,7 +1,5 @@
 import os
 import re
-import whisper
-import torch
 from pytube import YouTube
 from moviepy.editor import AudioFileClip
 
@@ -42,6 +40,7 @@ def download_audio(youtube_url: str, download_path: str) -> str:
         print(f"Error downloading audio: {e}")
         return ""
 
+
 def convert_mp4_to_mp3(input_file: str, output_file: str) -> None:
     """
     Convert an audio file from mp4 format to mp3.
@@ -53,22 +52,3 @@ def convert_mp4_to_mp3(input_file: str, output_file: str) -> None:
         os.remove(input_file)
     except Exception as e:
         print(f"Error converting file: {e}")
-
-
-def transcribe(file_path: str, model_name="base") -> str:
-    """
-    Transcribe input audio file using Whisper.
-    """
-    try:
-        # Определение устройства: использовать GPU если доступно, иначе CPU
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-
-        # Загрузка модели Whisper на соответствующее устройство
-        model = whisper.load_model(model_name, device=device)
-
-        # Распознавание аудио
-        result = model.transcribe(file_path)
-        return result["text"]
-    except Exception as e:
-        print(f"Error during transcription: {e}")
-        return ""
