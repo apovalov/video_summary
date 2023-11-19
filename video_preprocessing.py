@@ -1,6 +1,7 @@
 import os
 import re
 import whisper
+import torch
 from pytube import YouTube
 from moviepy.editor import AudioFileClip
 
@@ -20,6 +21,7 @@ def safe_filename(filename: str) -> str:
     Generate a safe filename by removing or replacing invalid characters.
     """
     return re.sub(r'[\\/*?:"<>|]', '', filename)
+
 
 def download_audio(youtube_url: str, download_path: str) -> str:
     """
@@ -52,13 +54,17 @@ def convert_mp4_to_mp3(input_file: str, output_file: str) -> None:
     except Exception as e:
         print(f"Error converting file: {e}")
 
+
 def transcribe(file_path: str, model_name="base") -> str:
     """
     Transcribe input audio file using Whisper.
     """
     try:
-        # Загрузка модели Whisper
-        model = whisper.load_model(model_name)
+        # Определение устройства: использовать GPU если доступно, иначе CPU
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        # Загрузка модели Whisper на соответствующее устройство
+        model = whisper.load_model(model_name, device=device)
 
         # Распознавание аудио
         result = model.transcribe(file_path)
@@ -66,16 +72,3 @@ def transcribe(file_path: str, model_name="base") -> str:
     except Exception as e:
         print(f"Error during transcription: {e}")
         return ""
-# Video2
-# Пример использования
-# title = video_title("https://youtu.be/CghqdnsLlew?si=P_8VC3rBN3VyJ_7G")
-# print(title)
-#
-# download_path = "data/"
-# input_file = download_audio("https://youtu.be/CghqdnsLlew?si=P_8VC3rBN3VyJ_7G", download_path)
-# output_file = os.path.join(download_path, safe_filename(title) + ".mp3")
-# convert_mp4_to_mp3(input_file, output_file)
-
-# Пример использования
-# transcribed_text = transcribe("data/Старт онлайн курса по исправлению осанки.mp3")
-# print(transcribed_text)
