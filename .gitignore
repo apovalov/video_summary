@@ -188,7 +188,6 @@ cython_debug/
 
 # datasets
 *.csv
-*.txt
 /data
 
 # models
